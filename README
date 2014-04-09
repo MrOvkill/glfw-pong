@@ -2,4 +2,8 @@ GLFW pong
 Copyright (c) 2014 Samuel "MrOverkill" Meyers
 Public Domain
 
-Enjoy
+You'll probably notice right off the bat that there's no build file.
+This is because everyone has preferences.
+All you need to do is install GLFW3 to your computer and link to it as you normally would if you want it to compile successfully. 
+
+Enjoy Pong! :)
