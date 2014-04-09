@@ -1,4 +1,0 @@
-glfw-pong
-=========
-
-GLFW Pong
