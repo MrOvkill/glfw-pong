@@ -5,9 +5,10 @@
 */
 
 #include <GLFW/glfw3.h>
-#include <stdlib.h>
-#include <stdio.h>
-#include <time.h>
+#include "util.hpp"
+#include "ball.hpp"
+#include <cstdio>
+#include <cstdlib>
 
 // Are we going up?  Are we going down?
 bool p1u, p1d;
@@ -21,85 +22,6 @@ float p1y;
 	http://www.roubaixinteractive.com/PlayGround/Binary_Conversion/Binary_To_Text.asp
 */
 float cpy, cpi;
-
-// Wait, what???
-int randInt(int min, int max)
-{
-	return rand() % max + min;
-}
-
-// 0_0 I give up
-float randFloat(float min, float max)
-{
-	return min + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(max-min)));
-}
-
-class Ball
-{
-	public:
-		float x, y, vx, vy;
-		Ball()
-		{
-			x = 0;
-			y = 0;
-			vx = 0;
-			vy = 0;
-		};
-		void start()
-		{
-			vx = randFloat(-0.025f, 0.025f);
-			vy = randFloat(-0.025f, 0.025f);
-		};
-		void tick()
-		{
-			x += vx;
-			y += vy;
-		};
-		void collideUp()
-		{
-			if(vy > 0)
-			{
-				vy = -(vy-randFloat(-0.001f, -0.005f));
-			}
-			else
-			{
-				vy = randFloat(-0.005f, -0.001f);
-			}
-		};
-		void collideDown()
-		{
-			if(vy < 0)
-			{
-				vy = -(vy+randFloat(0.001f, 0.005f));
-			}
-			else
-			{
-				vy = randFloat(0.001f, 0.005f);
-			}
-		};
-		void collideRight()
-		{
-			if(vx < 0)
-			{
-				vx = -(vx+randFloat(0.001f, 0.005f));
-			}
-			else
-			{
-				vx = randFloat(0.001f, 0.005f);
-			}
-		};
-		void collideLeft()
-		{
-			if(vx > 0)
-			{
-				vx = -(vx- randFloat(-0.001f, -0.005f));
-			}
-			else
-			{
-				vx = -randFloat(0.001f, 0.005f);
-			}
-		};
-};
 
 // Oh noes!
 static void error_callback(int error, const char* description)
@@ -134,18 +56,18 @@ static void key_callback(GLFWwindow* window, int key, int scancode, int action, 
 
 int main(void)
 {
-		// 'Seed' the random number generator *snicker*
-		srand(time(NULL));
+		// Create a new util
+		ovk::util::Util util = ovk::util::Util();
 		
 		// Create a new ball
-		Ball ball = Ball();
+		ovk::pong::Ball ball = ovk::pong::Ball(util);
 		
 		// Set both players to 0 on their Y axes
 		p1y = 0;
 		cpy = 0;
 		
 		// Set the CPU player's initial intelligence
-		cpi = randFloat(0.001f, 0.01f);
+		cpi = util.randFloat(0.001f, 0.01f);
 		
 		// Dat window
     GLFWwindow* window;
@@ -246,14 +168,14 @@ int main(void)
     		if((ball.x <= -1.15f) && (ball.x >= -1.25f) && (ball.y <= p1y+0.15) && (ball.y >= p1y-0.15))
     		{
     			ball.collideRight();
-    			cpi += randFloat(0.001f, 0.005f);
+    			cpi += util.randFloat(0.001f, 0.005f);
     		}
     		
     		// Check collisions for AI's paddle
     		if((ball.x >= 1.15f) && (ball.x <= 1.25f) && (ball.y <= cpy+0.15) && (ball.y >= cpy-0.15))
     		{
     			ball.collideLeft();
-    			cpi += randFloat(0.001f, 0.005f);
+    			cpi += util.randFloat(0.001f, 0.005f);
     		}
     		
         float ratio;
